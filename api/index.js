@@ -2,12 +2,20 @@ import dotenv from "dotenv"
 import express from "express"
 import userRoutes from "./routes/user.route.js"
 import authRoutes from "./routes/auth.route.js"
+import cookieParser from "cookie-parser"
+import path from 'path';
 // import connectDb from "./db/index.js";
 import mongoose from "mongoose";
 
 dotenv.config({path:'./env'})
 const app=express();
+app.use(express.static(path.join(__dirname, '/client/dist')));
+const __dirname = path.resolve();
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 app.use(express.json());
+app.use(cookieParser());
 mongoose.connect(process.env.MONGO)
         .then(()=>{
             console.log("connected to db")
